@@ -6,6 +6,7 @@ import importlib.util
 import logging
 import os
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
@@ -60,11 +61,8 @@ def _should_use_virtualenv() -> bool:
 
 def _subprocess(cmd: list[str]) -> None:
     """Invoke subprocess and output stdout and stderr if it fails."""
-    try:
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        print(e.output.decode(), end='', file=sys.stderr)
-        raise
+    _logger.info('Running %s',  shlex.join(cmd))
+    subprocess.run(cmd, check=True)
 
 
 class DefaultIsolatedEnv(IsolatedEnv):
